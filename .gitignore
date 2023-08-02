@@ -1,0 +1,4 @@
+*.pyc
+contour_csv/
+outputs/
+experiment_checkpoints/

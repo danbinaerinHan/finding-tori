@@ -1,0 +1,44 @@
+general:
+  make_log: False
+  debug: False
+  exp_name: baseline
+contour_dir: contour_csv/
+save_dir: experiment_checkpoints/
+meta_csv_path: 'metadata.csv'
+
+exp: self_supervised
+downstream: False
+
+train:
+  total_iters: 25000
+  seed: 42
+  num_workers: 2
+  num_iter_per_valid: 1000
+  num_iter_per_checkpoint: 2000
+
+  batch_size: 128
+  learning_rate: 0.001
+
+  hinge_margin: 0.4
+  num_neg_samples: 8
+
+  min_length: 20
+  slice_len: 30
+  frame_rate: 20
+
+  use_pitch_aug: True
+
+model_params:
+  input_size: 2
+  hidden_size: 128
+  num_layers: 4
+  kernel_size: 3
+  embed_size: 256
+  num_head: 8
+  summ_type: context_attention
+  use_pre_encoder: False
+  use_res: False
+  use_gradual_size: True
+  compression_ratio: 100
+  num_classes: 9
+

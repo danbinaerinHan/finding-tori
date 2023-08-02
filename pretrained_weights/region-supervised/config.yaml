@@ -1,0 +1,117 @@
+wandb_version: 1
+
+exp:
+  desc: null
+  value: terrain_classifier
+model_params.compression_ratio:
+  desc: null
+  value: 100
+model_params.embed_size:
+  desc: null
+  value: 256
+model_params.hidden_size:
+  desc: null
+  value: 128
+model_params.kernel_size:
+  desc: null
+  value: 3
+model_params.num_layers:
+  desc: null
+  value: 4
+general:
+  desc: null
+  value:
+    make_log: true
+    debug: false
+    exp_name: baseline
+contour_dir:
+  desc: null
+  value: contour_csv/
+save_dir:
+  desc: null
+  value: contrastive_learning
+meta_csv_path:
+  desc: null
+  value: metadata_sed.csv
+downstream:
+  desc: null
+  value: true
+train:
+  desc: null
+  value:
+    total_iters: 25000
+    seed: 42
+    num_workers: 2
+    num_iter_per_valid: 1000
+    num_iter_per_checkpoint: 2000
+    make_log: true
+    batch_size: 128
+    learning_rate: 0.001
+    hinge_margin: 0.4
+    num_neg_samples: 8
+    min_length: 20
+    slice_len: 30
+    frame_rate: 20
+model_params:
+  desc: null
+  value:
+    input_size: 2
+    hidden_size: 128
+    num_layers: 4
+    kernel_size: 3
+    embed_size: 256
+    num_head: 8
+    summ_type: context_attention
+    use_pre_encoder: false
+    use_res: false
+    use_gradual_size: true
+    compression_ratio: 100
+    num_classes: 9
+augment_params:
+  desc: null
+  value:
+    mask_w: 1
+    tempo_w: 1
+    tempo_slice: 7
+    drop_w: 0.3
+    std_w: 0.5
+    pitch_noise_w: 0.1
+    fill_w: 1
+    smooth_w: 5
+    smooth_order: 2
+    ab_noise_r: 0.05
+    ab_noise_w: 4
+    add_abs_noise: false
+    add_smoothing: false
+_wandb:
+  desc: null
+  value:
+    python_version: 3.8.10
+    cli_version: 0.14.2
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1681256748.148263
+    t:
+      1:
+      - 1
+      - 5
+      - 50
+      - 53
+      - 55
+      2:
+      - 1
+      - 5
+      - 50
+      - 53
+      - 55
+      3:
+      - 1
+      - 13
+      - 16
+      - 23
+      - 37
+      4: 3.8.10
+      5: 0.14.2
+      8:
+      - 5
