@@ -209,7 +209,7 @@ def main():
     ndcg_per_label[labels_exc_speech[idx]] += ndcg
     num_sample_per_label[labels_exc_speech[idx]] += 1
   ndcg_per_label = [ndcg_per_label[i] / num_sample_per_label[i] for i in range(4)]
-  print(f"Label names are {tori_set.class_names}")
+  print(f"Label names are {[x for x in tori_set.class_names if x != 'others']}")
   print(f"Mean NDCG: {total_ndcg / len(top_k_indices_exc_speech)}, NDCG per label: {ndcg_per_label}")
 
 
@@ -217,7 +217,7 @@ def main():
   print(f"Random forest accuracy: {k_mean} +- {k_std}")
 
   k_mean, k_std, wrong_samples = check_k_fold_random_forest(emb_exc_speech, labels_exc_speech, k=30)
-  print(f"Random forest accuracy (without others): {k_mean} +- {k_std}")
+  print(f"Random forest accuracy (without 'others' category): {k_mean} +- {k_std}")
 
 if __name__ == '__main__':
   main()
