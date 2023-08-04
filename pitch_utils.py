@@ -1,12 +1,7 @@
 import pandas as pd
-from data_utils import transpose_meta, get_ter, get_weight, get_monophony_id_list, get_splitted_meta, filter_monophony
-import torchaudio
-from IPython.display import Audio
+from data_utils import transpose_meta, get_ter, get_weight, get_splitted_meta
 import numpy as np
 from pathlib import Path
-import matplotlib.pyplot as plt
-import re
-from monitor_utils import DataMonitor
 from tqdm.auto import tqdm
 import random as random
 import torch
@@ -59,9 +54,6 @@ class PitchDataset:
     if not self.use_pitch_aug:
       print('Pitch augmentation is disabled.')
 
-    # self.id_list = list(self.meta['id'])#train_test 나누기
-    # monophonic_id_list = get_monophony_id_list(self.meta)
-    # self.filtered_list = [id for id in monophonic_id_list if id in self.id_list] 
     self.filtered_list = self.meta[(self.meta['choir_activation']<CHOIR_THR)
                                     & (self.meta['percussion_activation']<PERC_THR)
                                     & (self.meta['length'] > self.min_length) 
@@ -74,26 +66,21 @@ class PitchDataset:
     self.threshold = threshold
 
     self.length_filtered_list = self.load_all_csv() 
-    # self.length_filtered_list, self.length_filtered_id_list = self.filter_by_length() 
-    # self.meta = self.t_meta[self.length_filtered_id_list].T  
+
     self.t_meta = transpose_meta(self.meta)
     self.str2idx = {string:idx for idx, string in enumerate(get_ter())}
   
   def match_id_and_csv(self, id_list):
     csv_fn_list = [self.csv_dir/(id+'.f0.csv') for id in id_list]
     return csv_fn_list
-  # def match_csv_and_id(self):
-  #   id_list = [str(csv_id).split('/')[-1][:-7] for csv_id in self.len_filtered_list]
-  #   return id_list
+
   
   def load_all_csv(self):
-    # csv_list를 받아서 numpy array들의 list로 저장
     compressed_contours = [] 
     for csv in tqdm(self.splitted_csv_fn_list, leave=False):
       df = pd.read_csv(csv)
       frequency = df['frequency'].values
       confidence = df['confidence'].values
-      # frequency[confidence < threshold] = np.nan
       midi = [frequency_to_midi(freq) for freq in frequency]
       tonic_counter = Counter(np.round(midi)[confidence >= self.threshold]).most_common(1)
       tonic = tonic_counter[0][0]
@@ -142,17 +129,12 @@ class PitchDataset:
     return sliced_contour #, start_frame
 
   def get_label_weight(self):
-    # label_list = []
-    # for i in range(len(self.length_filtered_id_list)):
-    #   label = self.t_meta[self.length_filtered_id_list[i]]['ter']
-    #   label_list.append(label)
     label_list = self.meta['ter'].tolist()
     return get_weight(label_list)
   
   def __getitem__(self, idx):
     selected_song = self.length_filtered_list[idx] 
 
-    # sliced_contour, slice_start_frame = self._random_slice_tune(selected_song)
     sliced_contour = self._random_slice_tune(selected_song)
 
 
@@ -163,13 +145,10 @@ class PitchDataset:
     return (sliced_contour, self.str2idx[mp3_ter])
 
 
-    #
-    #
 def frequency_to_midi(frequency):
     # Convert frequency to MIDI note
     return 69 + 12 * math.log2(frequency / 440)
 
-# normalizing pitch
 
 
 
@@ -177,20 +156,6 @@ class PitchTriplet(PitchDataset):
   def __init__(self, meta, csv_dir, test_ter, min_length=15, slice_len=30, split = 'train', frame_rate=20, threshold=0.8, max_size=-1, use_pitch_aug=True):
     super().__init__(meta, csv_dir, test_ter, min_length, slice_len, split, frame_rate, threshold, max_size, use_pitch_aug=use_pitch_aug)
 
-  # def _random_slice_tune(self, selected_song):
-  #   len_song = selected_song.shape[1]
-    
-  #   # if self.split=='test':
-  #   #   mid = selected_song.shape[1]//2 
-  #   #   start_frame = mid- self.min_length*self.frame_rate//2 
-  #   if len_song > (self.min_length + 2) * self.frame_rate:
-  #     start_frame = random.randint(2 * self.frame_rate , selected_song.shape[1] - 1 - self.min_length * self.frame_rate )
-  #   elif selected_song.shape[1] - self.min_length * self.frame_rate <= 0:
-  #     start_frame = 0 
-  #   else:
-  #     start_frame = random.randint(0, selected_song.shape[1] - 1 - self.min_length * self.frame_rate  )
-  #   sliced_contour = selected_song[:, start_frame : start_frame + self.min_length * self.frame_rate]
-  #   return sliced_contour
 
   def _sample_negative_tune_idx(self, anchor_idx, num_samples=5):
     assert len(self) >= num_samples + 1
@@ -199,14 +164,6 @@ class PitchTriplet(PitchDataset):
     cand_list.pop(anchor_idx)
     return random.sample(cand_list, num_samples)
 
-    # 나중에 idx 하나하나 열어서 곡 제목이 중복되는지 체크하려고 한다면 아래를 변형
-    while True:
-      random_sample_idx = random.randint(0, len(self)-1)
-      if random_sample_idx not in included_idx:
-        included_idx.append(random_sample_idx)
-      if len(included_idx) == num_samples + 1:
-        break
-    return included_idx[1:]
 
   def __getitem__(self, idx):
     selected_song = self.length_filtered_list[idx] 
@@ -223,18 +180,9 @@ class PitchTriplet(PitchDataset):
 
 
 
-# def get_file_id_with_tori(xlsx_fn='final.xlsx'):
-#   df = pd.read_excel(xlsx_fn)
-#   df_tori = df[~df['tori'].isnull()]
-#   id_with_tori = df_tori['id'].values.tolist()
-
-#   return id_with_tori
-
-
 
 class ToriDataset(PitchDataset):
   def __init__(self, meta, csv_dir, frame_rate=20, min_length=20, slice_len=30, threshold=0.8, max_size=-1, load_all_csv=True, return_entire=False):
-    # xlsx_fn = '/home/danbi/userdata/DANBI/korean-folk-teo/final.xlsx'
     self.meta = meta[~meta['tori'].isnull()]
     self.t_meta = transpose_meta(self.meta)
     self.id_with_tori = self.meta['id'].values.tolist()
@@ -282,7 +230,6 @@ def pad_collate(raw_batch):
 
 class Monophony_filtered_Dataset(PitchDataset):
   def __init__(self, meta, csv_dir, frame_rate=20, min_length=20, slice_len=30, threshold=0.8, max_size=-1, load_all_csv=True, return_entire=False):
-    # xlsx_fn = '/home/danbi/userdata/DANBI/korean-folk-teo/final.xlsx'
     self.meta = meta[(meta['choir_activation']<CHOIR_THR)
                                     & (meta['percussion_activation']<PERC_THR)
                                     & (meta['length'] > min_length)

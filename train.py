@@ -36,8 +36,6 @@ def main(config: DictConfig):
 
 
 
-
-
   meta = pd.read_csv(original_wd + '/' + config.meta_csv_path)
 
   test_ter = random_test_ter(meta, config.train.seed)
@@ -117,20 +115,11 @@ def main(config: DictConfig):
   if config.general.make_log:
     wandb.watch(model)
 
-  # trainer.train_by_num_epoch(30)
   trainer.train_by_num_iteration(config.train.total_iters)
   return
 
 
 
 if __name__ == '__main__':
-  
-  '''
-  For Audio Model
-
-  for _ in range(20):
-    run_audio_classification_model()
-
-  '''
 
   main()

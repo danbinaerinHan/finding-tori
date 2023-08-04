@@ -3,30 +3,6 @@ from pitch_utils import filter_by_confidence
 from modules import ConvNorm, ContextAttention
 from model_utils import cal_conv_parameters
 
-class PitchEncoder(nn.Module):
-  def __init__(self, bottleneck_dim=32) -> None:
-    super().__init__()
-    self.encoder = nn.Sequential(
-      nn.Conv1d(2, bottleneck_dim, 3, stride=2, padding=1), 
-      nn.ReLU(),
-      nn.Conv1d(bottleneck_dim, bottleneck_dim, 3,stride=2, padding=1),
-      nn.ReLU(),
-      nn.Conv1d(bottleneck_dim, bottleneck_dim, 3,stride=2, padding=1),
-      nn.ReLU(),
-      nn.Conv1d(bottleneck_dim, bottleneck_dim, 3,stride=2, padding=1),
-      nn.ReLU(),
-      # nn.Conv1d(bottleneck_dim, bottleneck_dim, 25),
-      nn.Conv1d(bottleneck_dim, bottleneck_dim, 5,stride=5, padding=2),
-      nn.ReLU(),
-      nn.Conv1d(bottleneck_dim, bottleneck_dim, 5,stride=5, padding=2),
-      nn.ReLU(),
-      nn.Conv1d(bottleneck_dim, bottleneck_dim, 1),
-    )
-
-  def forward(self, x):
-   x = filter_by_confidence(x)
-   return self.encoder(x)[..., 0]
-    
 
 class CnnEncoder(nn.Module):
   def __init__(self, hparams):

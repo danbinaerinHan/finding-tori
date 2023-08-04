@@ -1,16 +1,15 @@
 import torch
 from pathlib import Path
-from omegaconf import OmegaConf
 import pandas as pd
 from data_utils import read_yaml, wandb_style_config_to_omega_config
 from model_zoo import CnnClassifier, CnnEncoder
-from pitch_utils import PitchTriplet, PitchDataset, ToriDataset, pad_collate
+from pitch_utils import ToriDataset, pad_collate
 import random
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 import argparse
 from collections import Counter
-from handfeatures import frequency_to_midi, get_midi_contour_from_csv, HistogramMaker
+from handfeatures import get_midi_contour_from_csv, HistogramMaker
 
 CONTOUR_DIR = Path('contour_csv/')
 

@@ -3,7 +3,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import wandb 
-from wandb import Html
 from sklearn.metrics import confusion_matrix
 import seaborn as sn
 import pandas as pd
@@ -17,7 +16,6 @@ from torch.nn.utils.rnn import pad_sequence
 
 
 class Trainer:
-    # def __init__(self, model, train_loader, valid_loader, optimizer, loss_fn, weight, device, save_dir, test_ter, save_log=True):
   def __init__(self, **kwargs):
     for key, value in kwargs.items():
       setattr(self, key, value)
@@ -201,9 +199,6 @@ class Trainer:
       record['valid.acc'].append(max(trainer.valid_acc))
       record['valid.loss'].append(min(trainer.valid_loss))
 
-      # acc.append(valid_acc)
-      # loss.append(valid_loss)
-
     # take average of each metric
     stat_record = {'mean':{}, 'std':{}}
     for key in record:
@@ -214,11 +209,6 @@ class Trainer:
     if self.save_log:
       wandb.log(stat_record['mean'], step=self.iteration)
       wandb.log(stat_record['std'], step=self.iteration)
-      # wandb.log({'downstream.test.acc': np.mean(acc), 
-      #            'downstream.test.loss': np.mean(loss), 
-      #            'downstream.test.acc.std': np.std(acc), 
-      #            'downstream.test.loss.std': np.std(loss)},
-      #            step=self.iteration)
     return stat_record
 
   def load_best_state(self):
@@ -229,10 +219,6 @@ class Trainer:
     else:
       print('No best model states to load')
 
-  # def apply_zero_mean_conv(self):
-  #   for name, param in self.model.named_parameters():
-  #     if 'conv_0' in name and param.ndim >= 3:
-  #       param.data[:,0] -= torch.mean(param.data[:,0], dim=1, keepdim=True)
 
 class TripletTrainer(Trainer):
   def __init__(self, **kwargs):
@@ -308,35 +294,3 @@ def pad_collate(batch):
   x = pad_sequence([t.T for t in x], batch_first=True).permute(0, 2, 1)
   y = torch.tensor(y, dtype=torch.long)
   return x, y
-
-
-# def train_model(model, trainloader, testloader, optimizer, num_epochs, criterion, weight, device='cuda'):
-#     loss_records =[] 
-#     valid_acc_records = []
-#     model.train()
-#     for epoch in tqdm(range(num_epochs)):
-#         for batch in tqdm(trainloader):
-#             audio, label = batch
-#             out = model(audio.to(device))
-#             loss = criterion(out, label.to(device), weight.to(device))
-#             loss.backward()
-#             optimizer.step()
-#             optimizer.zero_grad()
-#             loss_records.append(loss.item())
-#         valid_acc = test_model(model, testloader, device)
-#         valid_acc_records.append(valid_acc)
-#     return {"loss": loss_records, "valid_acc": valid_acc_records}
-
-# def test_model(model, testloader, device):
-#     right = 0
-#     model.eval()
-#     model.to(device)
-#     with torch.no_grad():
-#         for batch in testloader:
-#             audio, label = batch
-#             pred = model(audio.to(device))
-# #             print(torch.argmax(pred, dim = -1).shape)
-# #             print(label)
-# #             print(right)
-#             right += torch.sum(torch.argmax(pred, dim=-1)==label.to(device))
-#     model.train()  # return int(right) / len(testloader.dataset)

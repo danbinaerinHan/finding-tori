@@ -1,5 +1,4 @@
 import torch
-import torchaudio
 import torch.nn as nn
 
 def get_nll_loss(pred, target, weight, eps =1e-6, is_test=False):    
@@ -10,10 +9,6 @@ def get_nll_loss(pred, target, weight, eps =1e-6, is_test=False):
     else: 
         new_weight = weight[target]
         loss = torch.mean(loss.mul(new_weight))
-#     for i in range(32):
-#         _wei = weight[int(target[i])]
-#         new_weight.append(_wei)
-           
     return loss
 
 def get_test_loss(pred, target, eps = 1e-6):

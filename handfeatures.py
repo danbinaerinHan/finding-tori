@@ -1,5 +1,5 @@
 import pandas as pd
-from pitch_utils import PitchDataset, ToriDataset
+from pitch_utils import ToriDataset
 import math
 import numpy as np
 from collections import Counter

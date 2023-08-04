@@ -7,18 +7,13 @@ import matplotlib.pyplot as plt
 from IPython.display import display
 
 class DataMonitor:
-  def __init__(self, csv_dir, threshold, sr, audio_path = '/home/danbi/userdata/DANBI/Korean_folk/convert_wav'):
+  def __init__(self, csv_dir, threshold, sr, audio_path):
     self.csv_dir = Path(csv_dir)
     self.csv_fns = sorted(list(self.csv_dir.rglob('*.csv')))
     self.threshold = threshold
     self.sr = sr
     self.audio_path = audio_path
-    # self.frequency = self.get_frequency()
-    # self.freguency_figure = self.get_frequency_figure()
-    # self.audio = self.get_audio()[1]
-    # 
-    #  
-    
+
   def get_frequency(self, idx_or_fn):
     if isinstance(idx_or_fn, int):
       csv_fn = self.csv_fns[idx_or_fn]
