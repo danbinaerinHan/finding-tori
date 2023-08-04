@@ -1,7 +1,6 @@
 import numpy as np
 import torch
 import torch.nn as nn
-import librosa
 
 
 class ContextAttention(nn.Module):
@@ -65,30 +64,3 @@ def hz_to_midi(hz):
 
 def midi_to_hz(midi):
     return 440.0 * (2.0 ** ((midi - 69.0)/12.0))
-
-def note_to_midi(note):
-    return librosa.core.note_to_midi(note)
-
-def hz_to_note(hz):
-    return librosa.core.hz_to_note(hz)
-
-def initialize_filterbank(sample_rate, n_harmonic, semitone_scale):
-    # MIDI
-    # lowest note
-    low_midi = note_to_midi('C1')
-
-    # highest note
-    high_note = hz_to_note(sample_rate / (2 * n_harmonic))
-    high_midi = note_to_midi(high_note)
-
-    # number of scales
-    level = (high_midi - low_midi) * semitone_scale
-    midi = np.linspace(low_midi, high_midi, level + 1)
-    hz = midi_to_hz(midi[:-1])
-
-    # stack harmonics
-    harmonic_hz = []
-    for i in range(n_harmonic):
-        harmonic_hz = np.concatenate((harmonic_hz, hz * (i+1)))
-
-    return harmonic_hz, level
