@@ -40,8 +40,6 @@ pip install -r requirements.txt
 ```
 
 
-
-
 ## Reproduce the Result
 You can get the result of table 1 in our paper by running ``python3 get_eval_result.py``. For CNN models, pre-trained weights are available in `pretrained_weights/` directory. 
 
@@ -67,3 +65,16 @@ After the training, you can get the evaluation result by running code below
 ```
 python3 get_eval_result.py --ckpt_path=experiments_checkpoints/{date_time_model_code}/model_state.pt
 ```
+
+
+<!-- ## Citation
+If you use this code or tori-labeled data for your research, please cite our paper.
+
+```
+@inproceedings{han2023findingtori,
+  title={FindingTori: Self-supervised Learning for Analyzing Korean Folk Song},
+  author={Han, Danbinaerin and Caro Reppeto, Rafael and Jeong, Dasaem},
+  booktitle={Proceedings of the 24th International Society for Music Information Retrieval Conference (ISMIR)},
+  year={2023}
+}
+``` -->
