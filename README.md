@@ -2,8 +2,7 @@
 
 This is the official code repository for our ISMIR 2023 paper.
 
-[Paper](https://arxiv.org/abs/2308.02249)
-
+[Paper](https://arxiv.org/abs/2308.02249) \
 [Visualization demo](https://danbinaerinhan.github.io/korean-folksong-visualization/)
 
 ----
